@@ -1,13 +1,19 @@
 import os
 
+import streamlit as st
 from dotenv import load_dotenv
-
 
 load_dotenv()
 
 
 def get_required_env(name: str) -> str:
     value = os.getenv(name)
+
+    if not value:
+        try:
+            value = st.secrets.get(name)
+        except FileNotFoundError:
+            value = None
 
     if not value:
         raise ValueError(f"Missing required environment variable: {name}")
